@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Results | AI Resume Analyzer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(at 100% 0%, rgba(99, 102, 241, 0.1) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(168, 85, 247, 0.1) 0px, transparent 50%);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .btn-back {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: var(--text);
+            padding: 10px 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .btn-back:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-5px);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 24px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .score-box {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .score-circle {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            margin: 0 auto 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .score-circle::after {
+            content: '';
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            background: var(--bg);
+            border-radius: 50%;
+        }
+
+        .score-value {
+            position: relative;
+            z-index: 10;
+            font-size: 48px;
+            font-weight: 700;
+        }
+
+        .score-label {
+            position: relative;
+            z-index: 10;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .summary-card h2 {
+            font-size: 24px;
+            margin-bottom: 16px;
+            color: var(--primary);
+        }
+
+        .summary-text {
+            color: var(--text-muted);
+            line-height: 1.7;
+            font-size: 16px;
+        }
+
+        .section {
+            margin-top: 32px;
+        }
+
+        .section h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tag {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-size: 14px;
+            color: var(--primary);
+        }
+
+        .tag.missing {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .list-items {
+            list-style: none;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--glass-border);
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+
+        .list-item:last-child {
+            border-bottom: none;
+        }
+
+        .icon-check {
+            color: var(--success);
+            flex-shrink: 0;
+        }
+
+        .badge {
+            background: rgba(255,255,255,0.05);
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-bottom: 8px;
+            display: inline-block;
+        }
+
+        @media (max-width: 900px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <span class="badge">Analysis Complete</span>
+                <h1>{{ filename }}</h1>
+            </div>
+            <a href="/" class="btn-back">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                Analyze Another
+            </a>
+        </div>
+
+        <div class="grid">
+            <div class="card score-box">
+                <div class="score-circle">
+                    <span class="score-value">{{ results.score }}</span>
+                    <span class="score-label">ATS SCORE</span>
+                </div>
+                <p class="subtitle">Based on industry standards and AI parsing.</p>
+                
+                <div class="section" style="text-align: left;">
+                    <h3>
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M5 13l4 4L19 7"/>
+                        </svg>
+                        Top Skills Found
+                    </h3>
+                    <div class="tag-container">
+                        {% for skill in results.skills %}
+                        <span class="tag">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="section" style="text-align: left;">
+                    <h3>
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                        Missing Keywords
+                    </h3>
+                    <div class="tag-container">
+                        {% for m in results.missing %}
+                        <span class="tag missing">{{ m }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card summary-card">
+                <h2>Analysis Summary</h2>
+                <p class="summary-text">{{ results.summary }}</p>
+
+                <div class="section">
+                    <h3>Actionable Recommendations</h3>
+                    <ul class="list-items">
+                        {% for rec in results.recommendations %}
+                        <li class="list-item">
+                            <svg class="icon-check" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            {{ rec }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="section" style="background: rgba(99, 102, 241, 0.05); padding: 24px; border-radius: 16px; border: 1px solid rgba(99, 102, 241, 0.1); margin-top: 40px;">
+                    <h3 style="margin-bottom: 12px; color: var(--primary);">Next Steps</h3>
+                    <p style="font-size: 14px; color: var(--text-muted);">
+                        This analysis is powered by Google Gemini 1.5 Pro. To further improve your score, focus on the missing keywords and ensure your contact information and formatting are professional.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
