@@ -1,4 +1,5 @@
 import os
+import json
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -62,10 +63,20 @@ def analyze_resume_with_gemini(resume_text, api_key=None):
 
     try:
         response = model.generate_content(prompt)
-        # Simple extraction of JSON from response text
-        import json
-        content = response.text.replace('```json', '').replace('```', '').strip()
-        data = json.loads(content)
+
+        content = response.text.strip()
+
+        print("Gemini Raw Response:", content)
+
+        content = content.replace("```json", "").replace("```", "").strip()
+
+        start = content.find("{")
+        end = content.rfind("}") + 1
+
+        json_text = content[start:end]
+
+        data = json.loads(json_text)
+
         return data
     except Exception as e:
         print(f"Error calling Gemini: {e}")
