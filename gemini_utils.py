@@ -41,7 +41,7 @@ def analyze_resume_with_gemini(resume_text, api_key=None):
         }
 
     genai.configure(api_key=api_key)
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    model = genai.GenerativeModel('gemini-1.5-pro')
 
     prompt = f"""
     You are an expert ATS (Applicant Tracking System) and Career Coach. 
